@@ -1,0 +1,14 @@
+# Runtime data and local Odoo state
+*.pyc
+__pycache__/
+.pytest_cache/
+.DS_Store
+
+# Business imports stay local to the deployment environment.
+odoo/import/*
+!odoo/import/README.md
+data/*
+!data/README.md
+
+# Packaged binaries are delivery artifacts, not source control.
+*.zip

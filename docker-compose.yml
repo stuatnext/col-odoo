@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15
+    container_name: col-odoo-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - col_odoo_db:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    image: odoo:17.0
+    container_name: col-odoo-web
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - col_odoo_web:/var/lib/odoo
+      - ./odoo/config:/etc/odoo
+      - ./col_rights:/mnt/extra-addons/col_rights
+      - ./col_rights_crm:/mnt/extra-addons/col_rights_crm
+      - ./col_sales_delivery:/mnt/extra-addons/col_sales_delivery
+      - ./odoo/import:/mnt/import
+    command: ["odoo", "-c", "/etc/odoo/odoo.conf"]
+    restart: unless-stopped
+
+volumes:
+  col_odoo_db:
+  col_odoo_web:

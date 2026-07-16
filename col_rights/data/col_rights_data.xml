@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Title ID sequence: FF-0001, FF-0002 ... -->
+    <record id="seq_col_title" model="ir.sequence">
+        <field name="name">COL Title ID</field>
+        <field name="code">col.title</field>
+        <field name="prefix">FF-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- Media / platform types -->
+    <record id="media_svod" model="col.media"><field name="name">SVOD</field><field name="code">SVOD</field></record>
+    <record id="media_avod" model="col.media"><field name="name">AVOD</field><field name="code">AVOD</field></record>
+    <record id="media_telco" model="col.media"><field name="name">Telco / Carrier</field><field name="code">TELCO</field></record>
+    <record id="media_fast" model="col.media"><field name="name">FAST</field><field name="code">FAST</field></record>
+    <record id="media_ctv" model="col.media"><field name="name">Connected TV</field><field name="code">CTV</field></record>
+
+    <!-- Content languages -->
+    <record id="lang_en" model="col.language"><field name="name">English</field><field name="code">EN</field></record>
+    <record id="lang_cn" model="col.language"><field name="name">Chinese</field><field name="code">CN</field></record>
+    <record id="lang_ko" model="col.language"><field name="name">Korean</field><field name="code">KO</field></record>
+    <record id="lang_th" model="col.language"><field name="name">Thai</field><field name="code">TH</field></record>
+    <record id="lang_id" model="col.language"><field name="name">Bahasa Indonesia</field><field name="code">ID</field></record>
+    <record id="lang_ja" model="col.language"><field name="name">Japanese</field><field name="code">JA</field></record>
+    <record id="lang_es" model="col.language"><field name="name">Spanish</field><field name="code">ES</field></record>
+    <record id="lang_pt" model="col.language"><field name="name">Portuguese</field><field name="code">PT</field></record>
+
+    <!-- Controlled genre list (fixes the free-text genre sprawl) -->
+    <record id="genre_romance" model="col.genre"><field name="name">Romance</field></record>
+    <record id="genre_fantasy" model="col.genre"><field name="name">Fantasy</field></record>
+    <record id="genre_family" model="col.genre"><field name="name">Family/Ethical</field></record>
+    <record id="genre_thriller" model="col.genre"><field name="name">Thriller/Mystery</field></record>
+    <record id="genre_werewolf" model="col.genre"><field name="name">Werewolf</field></record>
+    <record id="genre_workplace" model="col.genre"><field name="name">Workplace/CEO</field></record>
+    <record id="genre_historical" model="col.genre"><field name="name">Historical</field></record>
+    <record id="genre_comedy" model="col.genre"><field name="name">Comedy</field></record>
+    <record id="genre_reality" model="col.genre"><field name="name">Reality</field></record>
+    <record id="genre_sports" model="col.genre"><field name="name">Sports</field></record>
+    <record id="genre_action" model="col.genre"><field name="name">Action</field></record>
+    <record id="genre_scifi" model="col.genre"><field name="name">Sci-Fi</field></record>
+
+    <!-- Daily cron: windowing (expiry) + conflict refresh -->
+    <record id="cron_recompute_grant_status" model="ir.cron">
+        <field name="name">COL: recompute rights grant status &amp; conflicts</field>
+        <field name="model_id" ref="model_col_rights_grant"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_recompute()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

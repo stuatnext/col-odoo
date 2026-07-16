@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_col_genre_user,col.genre.user,model_col_genre,col_rights.group_user,1,0,0,0
+access_col_genre_mgr,col.genre.mgr,model_col_genre,col_rights.group_manager,1,1,1,1
+access_col_tag_user,col.tag.user,model_col_tag,col_rights.group_user,1,1,1,0
+access_col_tag_mgr,col.tag.mgr,model_col_tag,col_rights.group_manager,1,1,1,1
+access_col_language_user,col.language.user,model_col_language,col_rights.group_user,1,0,0,0
+access_col_language_mgr,col.language.mgr,model_col_language,col_rights.group_manager,1,1,1,1
+access_col_media_user,col.media.user,model_col_media,col_rights.group_user,1,0,0,0
+access_col_media_mgr,col.media.mgr,model_col_media,col_rights.group_manager,1,1,1,1
+access_col_title_user,col.title.user,model_col_title,col_rights.group_user,1,1,1,0
+access_col_title_mgr,col.title.mgr,model_col_title,col_rights.group_manager,1,1,1,1
+access_col_agreement_user,col.agreement.user,model_col_agreement,col_rights.group_user,1,1,1,0
+access_col_agreement_mgr,col.agreement.mgr,model_col_agreement,col_rights.group_manager,1,1,1,1
+access_col_grant_user,col.grant.user,model_col_rights_grant,col_rights.group_user,1,1,1,0
+access_col_grant_mgr,col.grant.mgr,model_col_rights_grant,col_rights.group_manager,1,1,1,1
+access_col_avails_wizard_user,col.avails.wizard.user,model_col_avails_wizard,col_rights.group_user,1,1,1,1

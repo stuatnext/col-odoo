@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- TITLE                                                        -->
+    <!-- ============================================================ -->
+    <record id="view_col_title_tree" model="ir.ui.view">
+        <field name="name">col.title.tree</field>
+        <field name="model">col.title</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="name_cn" optional="show"/>
+                <field name="genre_id"/>
+                <field name="episode_count"/>
+                <field name="available_language_ids" widget="many2many_tags" optional="show"/>
+                <field name="grant_count" string="Grants"/>
+                <field name="conflict_count" string="Conflicts"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_col_title_form" model="ir.ui.view">
+        <field name="name">col.title.form</field>
+        <field name="model">col.title</field>
+        <field name="arch" type="xml">
+            <form>
+                <header/>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_grants" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o">
+                            <field name="grant_count" widget="statinfo" string="Grants"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="English title"/></h1>
+                        <field name="code" readonly="1"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name_cn"/>
+                            <field name="genre_id"/>
+                            <field name="sub_genre_ids" widget="many2many_tags"/>
+                            <field name="episode_count"/>
+                            <field name="duration"/>
+                            <field name="paywall_episode"/>
+                        </group>
+                        <group>
+                            <field name="available_language_ids" widget="many2many_tags"/>
+                            <field name="series_rating"/>
+                            <field name="screener_url" widget="url"/>
+                            <field name="product_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Synopsis"><field name="synopsis"/></page>
+                        <page string="Rights Grants">
+                            <field name="grant_ids">
+                                <tree decoration-danger="has_conflict==True" decoration-muted="status=='expired'">
+                                    <field name="partner_id"/>
+                                    <field name="media_ids" widget="many2many_tags"/>
+                                    <field name="exclusivity"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="has_conflict"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_col_title" model="ir.actions.act_window">
+        <field name="name">Titles</field>
+        <field name="res_model">col.title</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- RIGHTS GRANT                                                 -->
+    <!-- ============================================================ -->
+    <record id="view_col_grant_tree" model="ir.ui.view">
+        <field name="name">col.rights.grant.tree</field>
+        <field name="model">col.rights.grant</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="has_conflict==True" decoration-muted="status=='expired'">
+                <field name="title_id"/>
+                <field name="partner_id"/>
+                <field name="worldwide" optional="hide"/>
+                <field name="country_ids" widget="many2many_tags" optional="show"/>
+                <field name="media_ids" widget="many2many_tags"/>
+                <field name="exclusivity"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="status" widget="badge"/>
+                <field name="has_conflict" string="Conflict"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_col_grant_form" model="ir.ui.view">
+        <field name="name">col.rights.grant.form</field>
+        <field name="model">col.rights.grant</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Conflict" bg_color="text-bg-danger"
+                            invisible="not has_conflict"/>
+                    <group>
+                        <group>
+                            <field name="title_id"/>
+                            <field name="agreement_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="status" readonly="1" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="exclusivity"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group string="Territory">
+                        <field name="worldwide"/>
+                        <field name="country_ids" widget="many2many_tags"
+                               invisible="worldwide" options="{'no_create': True}"/>
+                        <field name="country_group_ids" widget="many2many_tags"
+                               invisible="worldwide"/>
+                    </group>
+                    <group string="Rights">
+                        <field name="media_ids" widget="many2many_tags"/>
+                        <field name="language_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="Conflicts" invisible="not has_conflict">
+                        <field name="conflict_ids" nolabel="1" readonly="1">
+                            <tree>
+                                <field name="partner_id"/>
+                                <field name="media_ids" widget="many2many_tags"/>
+                                <field name="exclusivity"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="status"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <field name="note" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_col_grant_search" model="ir.ui.view">
+        <field name="name">col.rights.grant.search</field>
+        <field name="model">col.rights.grant</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="title_id"/>
+                <field name="partner_id"/>
+                <field name="country_ids"/>
+                <field name="media_ids"/>
+                <filter name="f_available" string="Available" domain="[('status','=','available')]"/>
+                <filter name="f_licensed" string="Licensed" domain="[('status','=','licensed')]"/>
+                <filter name="f_expired" string="Expired" domain="[('status','=','expired')]"/>
+                <separator/>
+                <filter name="f_conflict" string="Has conflict" domain="[('has_conflict','=',True)]"/>
+                <filter name="f_exclusive" string="Exclusive" domain="[('exclusivity','=','exclusive')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="g_status" string="Status" context="{'group_by':'status'}"/>
+                    <filter name="g_partner" string="Licensee" context="{'group_by':'partner_id'}"/>
+                    <filter name="g_excl" string="Exclusivity" context="{'group_by':'exclusivity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_col_grant_pivot" model="ir.ui.view">
+        <field name="name">col.rights.grant.pivot</field>
+        <field name="model">col.rights.grant</field>
+        <field name="arch" type="xml">
+            <pivot string="Rights by status">
+                <field name="status" type="col"/>
+                <field name="exclusivity" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_col_grant" model="ir.actions.act_window">
+        <field name="name">Rights Grants</field>
+        <field name="res_model">col.rights.grant</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="search_view_id" ref="view_col_grant_search"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AGREEMENT                                                    -->
+    <!-- ============================================================ -->
+    <record id="view_col_agreement_tree" model="ir.ui.view">
+        <field name="name">col.agreement.tree</field>
+        <field name="model">col.agreement</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="agreement_type"/>
+                <field name="state" widget="badge"/>
+                <field name="signed_date"/>
+                <field name="grant_count" string="Grants"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_col_agreement_form" model="ir.ui.view">
+        <field name="name">col.agreement.form</field>
+        <field name="model">col.agreement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="prospect,negotiation,sent,signed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_grants" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o">
+                            <field name="grant_count" widget="statinfo" string="Grants"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="agreement_type"/>
+                            <field name="signed_date"/>
+                        </group>
+                        <group>
+                            <field name="document_ids" widget="many2many_binary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Commercial terms"><field name="commercial_terms"/></page>
+                        <page string="Rights granted">
+                            <field name="grant_ids" context="{'default_agreement_id': id}">
+                                <tree editable="bottom" decoration-danger="has_conflict==True">
+                                    <field name="title_id"/>
+                                    <field name="worldwide"/>
+                                    <field name="country_ids" widget="many2many_tags" invisible="worldwide"/>
+                                    <field name="media_ids" widget="many2many_tags"/>
+                                    <field name="exclusivity"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="has_conflict"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_col_agreement" model="ir.actions.act_window">
+        <field name="name">Agreements</field>
+        <field name="res_model">col.agreement</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AVAILS WIZARD                                                -->
+    <!-- ============================================================ -->
+    <record id="view_col_avails_wizard_form" model="ir.ui.view">
+        <field name="name">col.avails.wizard.form</field>
+        <field name="model">col.avails.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Availability Finder">
+                <group>
+                    <field name="country_id"/>
+                    <field name="media_id"/>
+                    <field name="language_id"/>
+                    <field name="date_check"/>
+                    <field name="want_exclusive"/>
+                </group>
+                <footer>
+                    <button name="action_find" type="object" string="Find available titles"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_col_avails_wizard" model="ir.actions.act_window">
+        <field name="name">Avails Finder</field>
+        <field name="res_model">col.avails.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Config actions -->
+    <record id="action_col_genre" model="ir.actions.act_window">
+        <field name="name">Genres</field><field name="res_model">col.genre</field><field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_col_media" model="ir.actions.act_window">
+        <field name="name">Media / Platforms</field><field name="res_model">col.media</field><field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_col_language" model="ir.actions.act_window">
+        <field name="name">Languages</field><field name="res_model">col.language</field><field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- MENUS                                                        -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_col_rights_root" name="Rights" sequence="20"
+              groups="col_rights.group_user"/>
+    <menuitem id="menu_col_title" name="Titles" parent="menu_col_rights_root"
+              action="action_col_title" sequence="10"/>
+    <menuitem id="menu_col_grant" name="Rights Grants" parent="menu_col_rights_root"
+              action="action_col_grant" sequence="20"/>
+    <menuitem id="menu_col_agreement" name="Agreements" parent="menu_col_rights_root"
+              action="action_col_agreement" sequence="30"/>
+    <menuitem id="menu_col_avails" name="Avails Finder" parent="menu_col_rights_root"
+              action="action_col_avails_wizard" sequence="40"/>
+    <menuitem id="menu_col_config" name="Configuration" parent="menu_col_rights_root"
+              sequence="90" groups="col_rights.group_manager"/>
+    <menuitem id="menu_col_genre" name="Genres" parent="menu_col_config" action="action_col_genre" sequence="10"/>
+    <menuitem id="menu_col_media" name="Media / Platforms" parent="menu_col_config" action="action_col_media" sequence="20"/>
+    <menuitem id="menu_col_language" name="Languages" parent="menu_col_config" action="action_col_language" sequence="30"/>
+</odoo>
