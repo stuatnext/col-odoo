@@ -44,6 +44,8 @@ placeholder. Change it before any shared, hosted or production deployment.
 
 See the [team operating guide](docs/COL%20Team%20Operating%20Guide.md) and
 [sales and delivery build spec](docs/COL%20Sales%20%26%20Delivery%20-%20Build%20Spec.md).
+For a browser-ready team presentation, open the
+[COL Team Walkthrough](docs/COL%20Team%20Walkthrough.html).
 
 ## Validation status
 
