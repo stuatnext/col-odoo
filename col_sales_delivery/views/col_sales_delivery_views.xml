@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_col_sales" model="ir.ui.view">
+        <field name="name">crm.lead.form.col.sales</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_delivery_projects" type="object" class="oe_stat_button" icon="fa-tasks">
+                    <field name="delivery_project_count" widget="statinfo" string="Delivery"/>
+                </button>
+            </div>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Content Deal">
+                    <group>
+                        <group>
+                            <field name="col_deal_type"/>
+                            <field name="col_commercial_model"/>
+                            <field name="col_media_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="col_country_ids" widget="many2many_tags"/>
+                            <field name="col_title_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <field name="col_scope_note" placeholder="Commercial scope, commitments, next decision..."/>
+                </page>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_delivery_project" type="object" string="Create Delivery Project"
+                        class="btn-primary" invisible="type != 'opportunity' or delivery_project_count &gt; 0"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_col_agreement_form_delivery" model="ir.ui.view">
+        <field name="name">col.agreement.form.delivery</field>
+        <field name="model">col.agreement</field>
+        <field name="inherit_id" ref="col_rights.view_col_agreement_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_delivery_projects" type="object" class="oe_stat_button" icon="fa-tasks">
+                    <field name="delivery_project_count" widget="statinfo" string="Delivery"/>
+                </button>
+            </div>
+            <header position="inside">
+                <button name="action_create_delivery_project" type="object" string="Create Delivery Project"
+                        class="btn-primary" invisible="delivery_project_count &gt; 0"/>
+            </header>
+        </field>
+    </record>
+
+    <record id="view_col_delivery_project_tree" model="ir.ui.view">
+        <field name="name">project.project.col.delivery.tree</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="col_deal_type"/>
+                <field name="agreement_id"/>
+                <field name="col_health" widget="badge"/>
+                <field name="col_launch_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_col_delivery_project_form" model="ir.ui.view">
+        <field name="name">project.project.col.delivery.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Project">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="crm_lead_id"/>
+                            <field name="agreement_id"/>
+                            <field name="col_deal_type"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="col_health" widget="badge"/>
+                            <field name="col_next_milestone"/>
+                            <field name="col_launch_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Deal Scope">
+                            <group>
+                                <field name="col_commercial_model"/>
+                                <field name="col_country_ids" widget="many2many_tags"/>
+                                <field name="col_media_ids" widget="many2many_tags"/>
+                                <field name="col_title_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Delivery Tasks">
+                            <field name="task_ids" context="{'default_project_id': id}">
+                                <tree editable="bottom" decoration-danger="col_is_blocked">
+                                    <field name="name"/>
+                                    <field name="col_delivery_stream"/>
+                                    <field name="stage_id"/>
+                                    <field name="date_deadline"/>
+                                    <field name="user_ids" widget="many2many_avatar_user"/>
+                                    <field name="col_is_milestone"/>
+                                    <field name="col_is_blocked"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_col_delivery_project_search" model="ir.ui.view">
+        <field name="name">project.project.col.delivery.search</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="agreement_id"/>
+                <filter name="f_on_track" string="On track" domain="[('col_health','=','on_track')]"/>
+                <filter name="f_attention" string="Needs attention" domain="[('col_health','=','watch')]"/>
+                <filter name="f_blocked" string="Blocked" domain="[('col_health','=','blocked')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="g_partner" string="Partner" context="{'group_by':'partner_id'}"/>
+                    <filter name="g_health" string="Health" context="{'group_by':'col_health'}"/>
+                    <filter name="g_type" string="Deal type" context="{'group_by':'col_deal_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_col_delivery_project" model="ir.actions.act_window">
+        <field name="name">Delivery Projects</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_col_delivery_project_tree"/>
+        <field name="search_view_id" ref="view_col_delivery_project_search"/>
+    </record>
+
+    <menuitem id="menu_col_commercial_root" name="Commercial" sequence="15"
+              groups="col_rights.group_user"/>
+    <menuitem id="menu_col_commercial_pipeline" name="Sales Pipeline" parent="menu_col_commercial_root"
+              action="crm.crm_lead_action_pipeline" sequence="10"/>
+    <menuitem id="menu_col_commercial_delivery" name="Delivery Projects" parent="menu_col_commercial_root"
+              action="action_col_delivery_project" sequence="20"/>
+    <menuitem id="menu_col_commercial_agreements" name="Agreements" parent="menu_col_commercial_root"
+              action="col_rights.action_col_agreement" sequence="30"/>
+</odoo>
